@@ -30,10 +30,18 @@ class SquareButton extends StatefulWidget {
   //set dimensions
   double buttonDimensions = 100;
 
-  //button elevation
-  double elevation = 10;
-
+  //current color on button
   late Color activeColor;
+
+  //button elevation
+  List<BoxShadow>? boxShadow = [
+    const BoxShadow(
+      color: Colors.black,
+      blurRadius: 10,
+      spreadRadius: 1,
+      offset: Offset(0, 5),
+    ),
+  ];
 
   @override
   State<SquareButton> createState() => _SquareButtonState();
@@ -58,36 +66,66 @@ class _SquareButtonState extends State<SquareButton> {
       height: widget.buttonDimensions,
       child: GestureDetector(
         onTap: widget.onTap ?? () => widget.toggle ? pressToggle() : press(),
-        child: Card(
-          shape: RoundedRectangleBorder(
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.easeInOut,
+          decoration: BoxDecoration(
+            boxShadow: widget.boxShadow,
             borderRadius: BorderRadius.circular(20),
+            color: widget.activeColor,
           ),
-          elevation: widget.elevation,
-          shadowColor: Colors.black,
-          color: widget.activeColor,
         ),
       ),
     );
   }
 
   press() {
-    //TODO: Add non-toggle transition logic and animation
+    setState(() {
+      widget.boxShadow = null;
+      widget.activeColor = primaryColorToggled!;
+      Future.delayed(
+        const Duration(milliseconds: 300),
+        () {
+          widget.boxShadow = [
+            const BoxShadow(
+              color: Colors.black,
+              blurRadius: 10,
+              spreadRadius: 1,
+              offset: Offset(0, 5),
+            ),
+          ];
+          widget.activeColor = primaryColor!;
+          setState(() {});
+        },
+      );
+    });
   }
 
   pressToggle() {
     if (widget.state) {
       //button is off
-      widget.elevation = 10;
+      widget.boxShadow = [
+        const BoxShadow(
+          color: Colors.black,
+          blurRadius: 10,
+          spreadRadius: 1,
+          offset: Offset(0, 5),
+        ),
+      ];
       widget.state = false;
       if (widget.colorScheme != null) {
         widget.activeColor = widget.colorScheme!.primaryColor;
+      } else {
+        widget.activeColor = primaryColor!;
       }
     } else {
       //button is on
-      widget.elevation = 0;
+      widget.boxShadow = null;
       widget.state = true;
       if (widget.colorScheme != null) {
         widget.activeColor = widget.colorScheme!.toggledColor;
+      } else {
+        widget.activeColor = primaryColorToggled!;
       }
     }
     setState(() {});
