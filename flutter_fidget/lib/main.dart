@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_fidget/Constants/theme.dart';
+import 'package:flutter_fidget/Flutter%20Elements/flutter_elements_page.dart';
 import 'Home/home.dart';
 
 void main() {
@@ -17,7 +18,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: primaryColor!),
         useMaterial3: false,
       ),
-      home: const Home(),
+      home: const FlutterElementsPage(),
     );
   }
 }
